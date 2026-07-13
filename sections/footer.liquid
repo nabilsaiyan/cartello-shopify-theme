@@ -1,0 +1,99 @@
+<footer class="c-footer full-width">
+  <div class="c-footer__top c-container">
+    <div class="c-footer__brand">
+      <div class="c-footer__logo">{{ shop.name }}</div>
+      <p class="c-footer__tag">Considered menswear, made to endure — crafted from the world's finest materials and built to last a lifetime.</p>
+
+      {%- form 'customer', class: 'c-footer__news' -%}
+        <input type="hidden" name="contact[tags]" value="newsletter">
+        <label for="c-news">Join the list — 10% off your first order</label>
+        <div class="c-footer__news-row">
+          <input id="c-news" type="email" name="contact[email]" placeholder="Email address" required>
+          <button type="submit" aria-label="Subscribe">&#8594;</button>
+        </div>
+        {%- if form.posted_successfully? -%}
+          <p class="c-footer__news-ok">Thank you — welcome to Cartello.</p>
+        {%- endif -%}
+      {%- endform -%}
+    </div>
+
+    <div class="c-footer__col">
+      <h4>Shop</h4>
+      {%- if section.settings.menu != blank -%}
+        {%- for link in section.settings.menu.links -%}
+          <a href="{{ link.url }}">{{ link.title }}</a>
+        {%- endfor -%}
+      {%- else -%}
+        <a href="/collections/men">Men</a>
+        <a href="/collections/outerwear">Outerwear</a>
+        <a href="/collections/accessories">Accessories</a>
+        <a href="/collections/new-arrivals">New Arrivals</a>
+      {%- endif -%}
+    </div>
+
+    <div class="c-footer__col">
+      <h4>Customer care</h4>
+      <a href="{{ routes.search_url }}">Search</a>
+      <a href="{{ routes.account_url }}">My account</a>
+      <a href="/pages/contact">Contact us</a>
+      <a href="#">Shipping &amp; returns</a>
+    </div>
+  </div>
+
+  <div class="c-footer__bottom c-container">
+    <span class="c-footer__copy">&copy; {{ 'now' | date: '%Y' }} {{ shop.name }}. All rights reserved.</span>
+    {%- if section.settings.show_payment_icons -%}
+      <div class="c-footer__pay">
+        {%- for type in shop.enabled_payment_types -%}
+          {{ type | payment_type_svg_tag }}
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+  </div>
+</footer>
+
+{% stylesheet %}
+  .c-footer { background: var(--c-ink); color: #fff; margin-top: 0; }
+  .c-footer__top {
+    display: grid;
+    grid-template-columns: 1.6fr 1fr 1fr;
+    gap: clamp(28px, 5vw, 72px);
+    padding-block: clamp(48px, 6vw, 80px);
+  }
+  .c-footer__logo { font-family: var(--c-serif); font-weight: 600; font-size: 1.8rem; letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 1rem; }
+  .c-footer__tag { color: rgba(255,255,255,0.6); max-width: 40ch; line-height: 1.7; font-size: 0.92rem; margin-bottom: 1.6rem; }
+  .c-footer__news label { display: block; font-size: 0.8rem; color: rgba(255,255,255,0.75); margin-bottom: 0.6rem; }
+  .c-footer__news-row { display: flex; max-width: 340px; border-bottom: 1px solid rgba(255,255,255,0.3); }
+  .c-footer__news-row input {
+    flex: 1; background: transparent; border: 0; color: #fff;
+    font-family: var(--c-sans); font-size: 0.9rem; padding: 0.6em 0;
+  }
+  .c-footer__news-row input::placeholder { color: rgba(255,255,255,0.4); }
+  .c-footer__news-row input:focus { outline: none; }
+  .c-footer__news-row button { background: transparent; border: 0; color: var(--c-accent); font-size: 1.2rem; cursor: pointer; padding: 0 0.4em; }
+  .c-footer__news-ok { color: var(--c-accent); font-size: 0.85rem; margin-top: 0.6rem; }
+  .c-footer__col h4 { font-family: var(--c-sans); font-weight: 600; font-size: 0.72rem; letter-spacing: 0.16em; text-transform: uppercase; color: rgba(255,255,255,0.5); margin-bottom: 1.1rem; }
+  .c-footer__col a { display: block; text-decoration: none; color: rgba(255,255,255,0.85); font-size: 0.92rem; padding: 0.35em 0; }
+  .c-footer__col a:hover { color: #fff; }
+  .c-footer__bottom {
+    display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap;
+    padding-block: 1.4rem; border-top: 1px solid rgba(255,255,255,0.12);
+  }
+  .c-footer__copy { font-size: 0.8rem; color: rgba(255,255,255,0.5); }
+  .c-footer__pay { display: flex; gap: 8px; flex-wrap: wrap; }
+  .c-footer__pay svg { width: 34px; height: 22px; border-radius: 3px; }
+  @media (max-width: 749px) {
+    .c-footer__top { grid-template-columns: 1fr 1fr; }
+    .c-footer__brand { grid-column: 1 / -1; }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Footer",
+  "settings": [
+    { "type": "link_list", "id": "menu", "label": "Shop menu" },
+    { "type": "checkbox", "id": "show_payment_icons", "label": "Show payment icons", "default": true }
+  ]
+}
+{% endschema %}
