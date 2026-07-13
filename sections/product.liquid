@@ -1,0 +1,314 @@
+{%- liquid
+  assign initial = product.selected_or_first_available_variant
+  assign opt_color = product.options_with_values[0]
+  assign opt_size = product.options_with_values[1]
+-%}
+
+<section
+  class="c-pdp full-width"
+  data-opt1="{{ initial.option1 | escape }}"
+  data-opt2="{{ initial.option2 | escape }}"
+>
+  <div class="c-pdp__grid c-container">
+    {%- comment -%} ---------- Gallery ---------- {%- endcomment -%}
+    <div class="c-pdp__gallery">
+      <div class="c-pdp__main">
+        <img
+          data-main-img
+          class="c-pdp__main-img"
+          src="{{ initial.featured_image | default: product.featured_image | image_url: width: 1200 }}"
+          alt="{{ product.title | escape }}"
+          width="1200"
+          height="1500"
+          loading="eager"
+        >
+      </div>
+      {%- if product.media.size > 1 -%}
+        <div class="c-pdp__thumbs">
+          {%- for media in product.media -%}
+            <button type="button" class="c-pdp__thumb" data-thumb data-src="{{ media | image_url: width: 1200 }}">
+              {{ media | image_url: width: 200 | image_tag: loading: 'lazy' }}
+            </button>
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+    </div>
+
+    {%- comment -%} ---------- Info ---------- {%- endcomment -%}
+    <div class="c-pdp__info">
+      <nav class="c-pdp__crumb">
+        <a href="{{ routes.root_url }}">Home</a>
+        <span>/</span>
+        <a href="/collections/all">Products</a>
+        <span>/</span>
+        <span class="c-pdp__crumb-current">{{ product.title }}</span>
+      </nav>
+
+      {%- if product.type != blank -%}<p class="c-pdp__type">{{ product.type }}</p>{%- endif -%}
+      <h1 class="c-pdp__title">{{ product.title }}</h1>
+
+      <div class="c-pdp__rating" aria-hidden="true">★★★★★ <span>5.0</span></div>
+
+      <div class="c-pdp__price">
+        <span class="c-pdp__now" data-price-now>{{ initial.price | money }}</span>
+        <s class="c-pdp__was" data-price-was {% unless initial.compare_at_price > initial.price %}hidden{% endunless %}>
+          {{- initial.compare_at_price | money -}}
+        </s>
+        <span class="c-pdp__disc" data-price-disc {% unless initial.compare_at_price > initial.price %}hidden{% endunless %}>
+          {%- if initial.compare_at_price > initial.price -%}
+            -{{ initial.compare_at_price | minus: initial.price | times: 100.0 | divided_by: initial.compare_at_price | round }}%
+          {%- endif -%}
+        </span>
+      </div>
+
+      {%- comment -%} Color swatches (image based) {%- endcomment -%}
+      {%- if opt_color -%}
+        <div class="c-pdp__opt">
+          <div class="c-pdp__opt-label">Color — <span data-selected-label="0">{{ initial.option1 }}</span></div>
+          <div class="c-pdp__swatches">
+            {%- for value in opt_color.values -%}
+              {%- assign vimg = blank -%}
+              {%- for v in product.variants -%}
+                {%- if v.option1 == value and vimg == blank -%}{%- assign vimg = v.featured_image -%}{%- endif -%}
+              {%- endfor -%}
+              <button
+                type="button"
+                class="c-sw{% if value == initial.option1 %} is-active{% endif %}"
+                data-opt-index="0"
+                data-value="{{ value | escape }}"
+                aria-label="{{ value | escape }}"
+              >
+                {%- if vimg != blank -%}
+                  {{ vimg | image_url: width: 120 | image_tag: loading: 'lazy', class: 'c-sw__img' }}
+                {%- else -%}
+                  <span class="c-sw__fallback"></span>
+                {%- endif -%}
+              </button>
+            {%- endfor -%}
+          </div>
+        </div>
+      {%- endif -%}
+
+      {%- comment -%} Size pills {%- endcomment -%}
+      {%- if opt_size -%}
+        <div class="c-pdp__opt">
+          <div class="c-pdp__opt-label">Size — <span data-selected-label="1">{{ initial.option2 }}</span></div>
+          <div class="c-pdp__pills">
+            {%- for value in opt_size.values -%}
+              <button
+                type="button"
+                class="c-pill{% if value == initial.option2 %} is-active{% endif %}"
+                data-opt-index="1"
+                data-value="{{ value | escape }}"
+              >
+                {{- value -}}
+              </button>
+            {%- endfor -%}
+          </div>
+        </div>
+      {%- endif -%}
+
+      {%- comment -%} Add to cart {%- endcomment -%}
+      {% form 'product', product, class: 'c-pdp__form' %}
+        <input type="hidden" name="id" data-variant-id value="{{ initial.id }}">
+        <div class="c-pdp__buy">
+          <div class="c-pdp__qty">
+            <button type="button" data-qty="-1" aria-label="Decrease">−</button>
+            <input type="number" name="quantity" value="1" min="1" data-qty-input>
+            <button type="button" data-qty="1" aria-label="Increase">+</button>
+          </div>
+          <button type="submit" class="c-btn c-btn--solid c-pdp__add" data-add data-label="Add to cart"
+            {% unless initial.available %}disabled{% endunless %}>
+            {%- if initial.available -%}Add to cart{%- else -%}Sold out{%- endif -%}
+          </button>
+        </div>
+      {% endform %}
+
+      {%- comment -%} Accordions {%- endcomment -%}
+      <div class="c-pdp__accordions">
+        <details class="c-pdp__acc" open>
+          <summary>Description</summary>
+          <div class="c-pdp__acc-body">{{ product.description }}</div>
+        </details>
+        <details class="c-pdp__acc">
+          <summary>Shipping &amp; Returns</summary>
+          <div class="c-pdp__acc-body">
+            <p>Complimentary standard shipping on orders over €150. Express delivery available at checkout. 30-day easy returns on unworn items.</p>
+          </div>
+        </details>
+        {%- assign care = product.metafields.custom.care_instructions.value -%}
+        {%- if care != blank -%}
+          <details class="c-pdp__acc">
+            <summary>Care instructions</summary>
+            <div class="c-pdp__acc-body"><p>{{ care }}</p></div>
+          </details>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+
+  <script type="application/json" data-variants>
+    [
+      {%- for v in product.variants -%}
+        {
+          "id": {{ v.id }},
+          "o1": {{ v.option1 | json }},
+          "o2": {{ v.option2 | json }},
+          "available": {{ v.available }},
+          "price": {{ v.price | money | json }},
+          "compare": {{ v.compare_at_price | money | json }},
+          "onSale": {% if v.compare_at_price > v.price %}true{% else %}false{% endif %},
+          "disc": {% if v.compare_at_price > v.price %}{{ v.compare_at_price | minus: v.price | times: 100.0 | divided_by: v.compare_at_price | round }}{% else %}0{% endif %},
+          "img": {{ v.featured_image | image_url: width: 1200 | json }}
+        }{%- unless forloop.last -%},{%- endunless -%}
+      {%- endfor -%}
+    ]
+  </script>
+</section>
+
+{% stylesheet %}
+  .c-pdp { padding: clamp(24px, 4vw, 48px) 0 clamp(60px, 8vw, 100px); }
+  .c-pdp__grid {
+    display: grid;
+    grid-template-columns: 1.05fr 1fr;
+    gap: clamp(28px, 5vw, 72px);
+    align-items: start;
+  }
+  /* Gallery */
+  .c-pdp__main { border-radius: 14px; overflow: hidden; background: var(--c-soft); aspect-ratio: 4 / 5; }
+  .c-pdp__main-img { width: 100%; height: 100%; object-fit: cover; }
+  .c-pdp__thumbs { display: flex; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
+  .c-pdp__thumb {
+    width: 68px; height: 84px; padding: 0; border: 1px solid var(--c-border);
+    border-radius: 8px; overflow: hidden; background: var(--c-soft); cursor: pointer;
+  }
+  .c-pdp__thumb img { width: 100%; height: 100%; object-fit: cover; }
+  /* Info */
+  .c-pdp__info { position: sticky; top: 24px; }
+  .c-pdp__crumb { font-family: var(--c-sans); font-size: 0.8rem; color: var(--c-muted); display: flex; gap: 0.5em; align-items: center; margin-bottom: 1.4rem; }
+  .c-pdp__crumb a { text-decoration: none; color: var(--c-muted); }
+  .c-pdp__crumb a:hover { color: var(--c-ink); }
+  .c-pdp__crumb-current { color: var(--c-ink); }
+  .c-pdp__type { font-family: var(--c-sans); text-transform: uppercase; letter-spacing: 0.18em; font-size: 0.72rem; color: var(--c-muted); }
+  .c-pdp__title { font-family: var(--c-serif); font-weight: 600; font-size: clamp(2rem, 3.6vw, 2.9rem); line-height: 1.05; margin: 0.3rem 0 0.6rem; }
+  .c-pdp__rating { color: var(--c-accent); font-size: 0.95rem; letter-spacing: 0.1em; margin-bottom: 1.2rem; }
+  .c-pdp__rating span { color: var(--c-muted); font-size: 0.85rem; margin-left: 0.4em; letter-spacing: 0; }
+  .c-pdp__price { display: flex; align-items: baseline; gap: 0.8rem; margin-bottom: 1.8rem; font-family: var(--c-sans); }
+  .c-pdp__now { font-size: 1.6rem; font-weight: 600; }
+  .c-pdp__was { color: var(--c-muted); font-size: 1.05rem; }
+  .c-pdp__disc { color: var(--c-accent-deep); font-size: 0.9rem; font-weight: 600; }
+  .c-pdp__opt { margin-bottom: 1.5rem; }
+  .c-pdp__opt-label { font-family: var(--c-sans); font-size: 0.85rem; font-weight: 500; margin-bottom: 0.6rem; }
+  .c-pdp__opt-label span { color: var(--c-muted); }
+  .c-pdp__swatches { display: flex; gap: 10px; flex-wrap: wrap; }
+  .c-sw { width: 48px; height: 48px; border-radius: 50%; padding: 0; overflow: hidden; border: 1px solid var(--c-border); cursor: pointer; background: var(--c-soft); position: relative; box-shadow: 0 0 0 0 var(--c-accent); transition: box-shadow 0.15s ease; }
+  .c-sw__img { width: 100%; height: 100%; object-fit: cover; }
+  .c-sw__fallback { display: block; width: 100%; height: 100%; }
+  .c-sw.is-active { box-shadow: 0 0 0 2px var(--c-bg), 0 0 0 4px var(--c-accent); }
+  .c-pdp__pills { display: flex; gap: 8px; flex-wrap: wrap; }
+  .c-pill { min-width: 46px; padding: 0.65em 0.9em; border: 1px solid var(--c-border); background: var(--c-bg); border-radius: 999px; font-family: var(--c-sans); font-size: 0.88rem; cursor: pointer; transition: all 0.15s ease; }
+  .c-pill:hover { border-color: var(--c-ink); }
+  .c-pill.is-active { background: var(--c-ink); color: #fff; border-color: var(--c-ink); }
+  /* Buy row */
+  .c-pdp__form { margin-top: 0.5rem; }
+  .c-pdp__buy { display: flex; gap: 12px; margin-bottom: 12px; }
+  .c-pdp__qty { display: flex; align-items: center; border: 1px solid var(--c-border); border-radius: 999px; padding: 0 6px; }
+  .c-pdp__qty button { width: 34px; height: 44px; border: 0; background: transparent; font-size: 1.1rem; cursor: pointer; color: var(--c-ink); }
+  .c-pdp__qty input { width: 40px; text-align: center; border: 0; background: transparent; font-family: var(--c-sans); -moz-appearance: textfield; }
+  .c-pdp__qty input::-webkit-outer-spin-button, .c-pdp__qty input::-webkit-inner-spin-button { -webkit-appearance: none; }
+  .c-pdp__add { flex: 1; }
+  .c-pdp__add:disabled { opacity: 0.5; cursor: not-allowed; }
+  /* Accordions */
+  .c-pdp__accordions { margin-top: 1.8rem; border-top: 1px solid var(--c-border); }
+  .c-pdp__acc { border-bottom: 1px solid var(--c-border); }
+  .c-pdp__acc summary { list-style: none; cursor: pointer; padding: 1.1rem 0; font-family: var(--c-sans); font-weight: 500; display: flex; justify-content: space-between; align-items: center; }
+  .c-pdp__acc summary::-webkit-details-marker { display: none; }
+  .c-pdp__acc summary::after { content: "+"; color: var(--c-muted); font-size: 1.2rem; }
+  .c-pdp__acc[open] summary::after { content: "−"; }
+  .c-pdp__acc-body { padding: 0 0 1.2rem; color: var(--c-muted); line-height: 1.7; font-family: var(--c-sans); }
+  @media (max-width: 900px) {
+    .c-pdp__grid { grid-template-columns: 1fr; }
+    .c-pdp__info { position: static; }
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  (function () {
+    function apply(root, variants) {
+      var o1 = root.dataset.opt1;
+      var o2 = root.dataset.opt2;
+      var v = variants.find(function (x) { return x.o1 === o1 && (o2 == null || x.o2 === o2); });
+
+      root.querySelectorAll("[data-opt-index]").forEach(function (btn) {
+        var on = (btn.dataset.optIndex === "0" && btn.dataset.value === o1) ||
+                 (btn.dataset.optIndex === "1" && btn.dataset.value === o2);
+        btn.classList.toggle("is-active", on);
+      });
+      root.querySelectorAll("[data-selected-label]").forEach(function (el) {
+        el.textContent = el.dataset.selectedLabel === "0" ? o1 : o2;
+      });
+
+      if (!v) return;
+      var idInput = root.querySelector("[data-variant-id]");
+      if (idInput) idInput.value = v.id;
+      var now = root.querySelector("[data-price-now]");
+      if (now) now.textContent = v.price;
+      var was = root.querySelector("[data-price-was]");
+      var disc = root.querySelector("[data-price-disc]");
+      if (v.onSale) {
+        if (was) { was.textContent = v.compare; was.hidden = false; }
+        if (disc) { disc.textContent = "-" + v.disc + "%"; disc.hidden = false; }
+      } else {
+        if (was) was.hidden = true;
+        if (disc) disc.hidden = true;
+      }
+      var img = root.querySelector("[data-main-img]");
+      if (img && v.img) img.src = v.img;
+      var add = root.querySelector("[data-add]");
+      if (add) {
+        add.disabled = !v.available;
+        add.textContent = v.available ? (add.dataset.label || "Add to cart") : "Sold out";
+      }
+    }
+
+    function initPDP(root) {
+      var dataEl = root.querySelector("[data-variants]");
+      if (!dataEl) return;
+      var variants = JSON.parse(dataEl.textContent);
+
+      root.addEventListener("click", function (e) {
+        var opt = e.target.closest("[data-opt-index]");
+        if (opt && root.contains(opt)) {
+          if (opt.dataset.optIndex === "0") root.dataset.opt1 = opt.dataset.value;
+          else root.dataset.opt2 = opt.dataset.value;
+          apply(root, variants);
+          return;
+        }
+        var thumb = e.target.closest("[data-thumb]");
+        if (thumb && root.contains(thumb)) {
+          var main = root.querySelector("[data-main-img]");
+          if (main) main.src = thumb.dataset.src;
+          return;
+        }
+        var qty = e.target.closest("[data-qty]");
+        if (qty && root.contains(qty)) {
+          var input = root.querySelector("[data-qty-input]");
+          var val = Math.max(1, (parseInt(input.value, 10) || 1) + parseInt(qty.dataset.qty, 10));
+          input.value = val;
+        }
+      });
+
+      apply(root, variants);
+    }
+
+    document.querySelectorAll(".c-pdp").forEach(initPDP);
+  })();
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "Product",
+  "settings": [],
+  "disabled_on": { "groups": ["header", "footer"] }
+}
+{% endschema %}
