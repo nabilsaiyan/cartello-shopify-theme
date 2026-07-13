@@ -1,0 +1,69 @@
+<section class="c-search full-width">
+  <div class="c-container">
+    <header class="c-search__head">
+      <p class="c-eyebrow">Search</p>
+      <h1 class="c-search__title">Find something</h1>
+    </header>
+
+    <form action="{{ routes.search_url }}" method="get" role="search" class="c-search__form">
+      <input type="search" name="q" value="{{ search.terms | escape }}" placeholder="Search for products…" aria-label="Search">
+      <button type="submit" class="c-btn c-btn--solid">Search</button>
+    </form>
+
+    {%- if search.performed -%}
+      {%- if search.results_count == 0 -%}
+        <p class="c-search__empty">No results for “{{ search.terms }}”. Try a different search.</p>
+      {%- else -%}
+        <p class="c-search__count">{{ search.results_count }} result{{ search.results_count | pluralize: '', 's' }} for “{{ search.terms }}”</p>
+        {%- paginate search.results by 24 -%}
+          <div class="c-search__grid">
+            {%- for result in search.results -%}
+              {%- if result.object_type == 'product' -%}
+                {% render 'cartello-product-card', product: result %}
+              {%- else -%}
+                <a class="c-search__other" href="{{ result.url }}">
+                  <span class="c-search__other-type">{{ result.object_type }}</span>
+                  <span class="c-search__other-title">{{ result.title }}</span>
+                </a>
+              {%- endif -%}
+            {%- endfor -%}
+          </div>
+          {%- if paginate.pages > 1 -%}
+            <nav class="c-search__pagination">{{ paginate | default_pagination }}</nav>
+          {%- endif -%}
+        {%- endpaginate -%}
+      {%- endif -%}
+    {%- endif -%}
+  </div>
+</section>
+
+{% stylesheet %}
+  .c-search { padding: clamp(32px, 5vw, 64px) 0 clamp(60px, 8vw, 100px); }
+  .c-search__head { margin-bottom: 1.6rem; }
+  .c-search__head .c-eyebrow { margin-bottom: 0.6rem; }
+  .c-search__title { font-family: var(--c-serif); font-weight: 600; font-size: clamp(2rem, 4vw, 3rem); }
+  .c-search__form { display: flex; gap: 12px; max-width: 620px; margin-bottom: 2.5rem; }
+  .c-search__form input {
+    flex: 1; border: 1px solid var(--c-border); border-radius: 999px;
+    padding: 0.85em 1.4em; font-family: var(--c-sans); font-size: 0.95rem; background: var(--c-bg);
+  }
+  .c-search__form input:focus { outline: none; border-color: var(--c-ink); }
+  .c-search__count, .c-search__empty { font-family: var(--c-sans); color: var(--c-muted); margin-bottom: 1.6rem; }
+  .c-search__grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 34px 18px; }
+  .c-search__other {
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 1.4rem; border: 1px solid var(--c-border); border-radius: 12px; text-decoration: none; color: var(--c-ink);
+  }
+  .c-search__other-type { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.16em; color: var(--c-muted); margin-bottom: 0.4rem; }
+  .c-search__other-title { font-family: var(--c-serif); font-size: 1.1rem; }
+  .c-search__pagination { display: flex; justify-content: center; gap: 1rem; margin-top: 3rem; font-family: var(--c-sans); }
+  @media (max-width: 900px) { .c-search__grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 520px) { .c-search__form { flex-direction: column; } }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Search",
+  "settings": []
+}
+{% endschema %}

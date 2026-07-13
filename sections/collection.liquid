@@ -1,0 +1,80 @@
+{%- assign current_sort = collection.sort_by | default: collection.default_sort_by -%}
+
+<section class="c-coll full-width">
+  <div class="c-container">
+    <header class="c-coll__head">
+      <p class="c-eyebrow">Collection</p>
+      <h1 class="c-coll__title">{{ collection.title }}</h1>
+      {%- if collection.description != blank -%}
+        <div class="c-coll__desc">{{ collection.description }}</div>
+      {%- endif -%}
+    </header>
+
+    <div class="c-coll__bar">
+      <span class="c-coll__count">{{ collection.products_count }} item{{ collection.products_count | pluralize: '', 's' }}</span>
+      <form method="get" class="c-coll__sort">
+        <label for="c-sort">Sort by</label>
+        <select name="sort_by" id="c-sort" onchange="this.form.submit()">
+          {%- for option in collection.sort_options -%}
+            <option value="{{ option.value }}" {% if option.value == current_sort %}selected{% endif %}>{{ option.name }}</option>
+          {%- endfor -%}
+        </select>
+      </form>
+    </div>
+
+    {%- paginate collection.products by 24 -%}
+      <div class="c-coll__grid">
+        {%- for product in collection.products -%}
+          {% render 'cartello-product-card', product: product %}
+        {%- else -%}
+          <p class="c-coll__empty">No products in this collection yet.</p>
+        {%- endfor -%}
+      </div>
+
+      {%- if paginate.pages > 1 -%}
+        <nav class="c-coll__pagination">{{ paginate | default_pagination }}</nav>
+      {%- endif -%}
+    {%- endpaginate -%}
+  </div>
+</section>
+
+{% stylesheet %}
+  .c-coll { padding: clamp(32px, 5vw, 64px) 0 clamp(60px, 8vw, 100px); }
+  .c-coll__head { max-width: 620px; margin-bottom: 1.8rem; }
+  .c-coll__head .c-eyebrow { margin-bottom: 0.7rem; }
+  .c-coll__title { font-family: var(--c-serif); font-weight: 600; font-size: clamp(2.2rem, 4.5vw, 3.4rem); }
+  .c-coll__desc { color: var(--c-muted); margin-top: 0.7rem; line-height: 1.6; }
+  .c-coll__bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 0;
+    border-top: 1px solid var(--c-border);
+    border-bottom: 1px solid var(--c-border);
+    margin-bottom: 2rem;
+  }
+  .c-coll__count { font-family: var(--c-sans); font-size: 0.85rem; color: var(--c-muted); }
+  .c-coll__sort { display: flex; align-items: center; gap: 0.5rem; font-family: var(--c-sans); font-size: 0.85rem; }
+  .c-coll__sort label { color: var(--c-muted); }
+  .c-coll__sort select {
+    border: 1px solid var(--c-border);
+    border-radius: 999px;
+    padding: 0.5em 2em 0.5em 1em;
+    background-color: var(--c-bg);
+    font-family: var(--c-sans);
+    font-size: 0.85rem;
+    cursor: pointer;
+  }
+  .c-coll__grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 34px 18px; }
+  .c-coll__empty { color: var(--c-muted); font-style: italic; }
+  .c-coll__pagination { display: flex; justify-content: center; gap: 1rem; margin-top: 3rem; font-family: var(--c-sans); }
+  @media (max-width: 900px) { .c-coll__grid { grid-template-columns: repeat(2, 1fr); } }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Collection",
+  "settings": []
+}
+{% endschema %}
