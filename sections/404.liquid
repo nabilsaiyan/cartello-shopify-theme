@@ -1,0 +1,23 @@
+<section class="c-404 full-width">
+  <div class="c-container c-404__inner">
+    <p class="c-eyebrow">Error 404</p>
+    <h1 class="c-404__title">This page has wandered off.</h1>
+    <p class="c-404__text">The page you're looking for doesn't exist or may have moved.</p>
+    <a href="/collections/all" class="c-btn c-btn--solid">Return to the shop</a>
+  </div>
+</section>
+
+{% stylesheet %}
+  .c-404 { padding: clamp(60px, 12vw, 160px) 0; }
+  .c-404__inner { text-align: center; display: flex; flex-direction: column; align-items: center; }
+  .c-404__inner .c-eyebrow { margin-bottom: 1rem; }
+  .c-404__title { font-family: var(--c-serif); font-weight: 600; font-size: clamp(2.2rem, 5vw, 3.6rem); max-width: 16ch; }
+  .c-404__text { font-family: var(--c-sans); color: var(--c-muted); margin: 1rem 0 2rem; max-width: 44ch; }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "404",
+  "settings": []
+}
+{% endschema %}
