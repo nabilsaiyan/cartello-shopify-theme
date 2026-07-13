@@ -1,0 +1,74 @@
+{
+  "sections": {
+    "marquee": {
+      "type": "cartello-marquee",
+      "blocks": {
+        "m1": { "type": "message", "settings": { "text": "Complimentary shipping over €150" } },
+        "m2": { "type": "message", "settings": { "text": "Crafted from Italian wool" } },
+        "m3": { "type": "message", "settings": { "text": "30-day easy returns" } },
+        "m4": { "type": "message", "settings": { "text": "Made to last a lifetime" } }
+      },
+      "block_order": ["m1", "m2", "m3", "m4"],
+      "settings": {}
+    },
+    "hero": {
+      "type": "cartello-hero",
+      "settings": {
+        "eyebrow": "Autumn / Winter Collection",
+        "heading": "Considered menswear, made to endure.",
+        "subheading": "Premium tailoring, outerwear and accessories in the modern classic tradition — built to last a lifetime.",
+        "button_label": "Shop the collection",
+        "button_link": "/collections/all",
+        "button2_label": "New arrivals",
+        "button2_link": "/collections/new-arrivals",
+        "height": 82,
+        "overlay": 45
+      }
+    },
+    "categories": {
+      "type": "cartello-categories",
+      "blocks": {
+        "c1": { "type": "category", "settings": { "title": "Men", "link": "/collections/men", "image_asset": "cat-men.jpg" } },
+        "c2": { "type": "category", "settings": { "title": "Outerwear", "link": "/collections/outerwear", "image_asset": "cat-outerwear.jpg" } },
+        "c3": { "type": "category", "settings": { "title": "Accessories", "link": "/collections/accessories", "image_asset": "cat-accessories.jpg" } },
+        "c4": { "type": "category", "settings": { "title": "New Arrivals", "link": "/collections/new-arrivals", "image_asset": "cat-new-arrivals.jpg" } }
+      },
+      "block_order": ["c1", "c2", "c3", "c4"],
+      "settings": { "eyebrow": "The collection", "heading": "Shop by category" }
+    },
+    "featured_essentials": {
+      "type": "cartello-featured",
+      "settings": {
+        "eyebrow": "Featured",
+        "heading": "The essentials",
+        "collection": "men",
+        "limit": 4,
+        "link_label": "View all",
+        "link_url": "/collections/men"
+      }
+    },
+    "editorial": {
+      "type": "cartello-editorial",
+      "settings": {
+        "reverse": false,
+        "eyebrow": "Our philosophy",
+        "heading": "Fewer things, better made.",
+        "body": "<p>Cartello is built on a simple belief: that a wardrobe should be composed of pieces worth keeping. We work with Italian mills and traditional makers to create menswear designed to outlast trends — and seasons.</p>",
+        "button_label": "Discover the collection",
+        "button_link": "/collections/all"
+      }
+    },
+    "featured_new": {
+      "type": "cartello-featured",
+      "settings": {
+        "eyebrow": "Just landed",
+        "heading": "New arrivals",
+        "collection": "new-arrivals",
+        "limit": 4,
+        "link_label": "View all",
+        "link_url": "/collections/new-arrivals"
+      }
+    }
+  },
+  "order": ["hero", "marquee", "categories", "featured_essentials", "editorial", "featured_new"]
+}
