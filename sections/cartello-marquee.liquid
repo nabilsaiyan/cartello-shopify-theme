@@ -1,0 +1,78 @@
+<section class="c-marquee full-width" aria-label="Store highlights">
+  <div class="c-marquee__track">
+    {%- for group in (1..2) -%}
+      <div class="c-marquee__group"{% if group == 2 %} aria-hidden="true"{% endif %}>
+        {%- for rep in (1..3) -%}
+          {%- for block in section.blocks -%}
+            <span class="c-marquee__item">{{ block.settings.text }}</span>
+            <span class="c-marquee__sep" aria-hidden="true">&#10022;</span>
+          {%- endfor -%}
+        {%- endfor -%}
+      </div>
+    {%- endfor -%}
+  </div>
+</section>
+
+{% stylesheet %}
+  .c-marquee {
+    background: var(--c-ink);
+    color: #fff;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    min-height: 46px;
+  }
+  .c-marquee__track {
+    display: flex;
+    width: max-content;
+    animation: c-marquee 40s linear infinite;
+  }
+  .c-marquee__group { display: flex; align-items: center; flex-shrink: 0; }
+  @keyframes c-marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+  .c-marquee__item {
+    font-family: var(--c-sans);
+    text-transform: uppercase;
+    letter-spacing: 0.22em;
+    font-size: 0.72rem;
+    font-weight: 500;
+    line-height: 1;
+    white-space: nowrap;
+    padding: 0 1.5rem;
+    color: rgba(255, 255, 255, 0.92);
+  }
+  .c-marquee__sep { color: var(--c-accent); font-size: 0.6rem; line-height: 1; }
+  @media (prefers-reduced-motion: reduce) {
+    .c-marquee__track { animation: none; }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Cartello marquee",
+  "tag": "section",
+  "blocks": [
+    {
+      "type": "message",
+      "name": "Message",
+      "settings": [
+        { "type": "text", "id": "text", "label": "Text", "default": "Complimentary shipping over €150" }
+      ]
+    }
+  ],
+  "max_blocks": 8,
+  "presets": [
+    {
+      "name": "Cartello marquee",
+      "blocks": [
+        { "type": "message", "settings": { "text": "Complimentary shipping over €150" } },
+        { "type": "message", "settings": { "text": "Crafted from Italian wool" } },
+        { "type": "message", "settings": { "text": "30-day easy returns" } },
+        { "type": "message", "settings": { "text": "Made to last a lifetime" } }
+      ]
+    }
+  ]
+}
+{% endschema %}
