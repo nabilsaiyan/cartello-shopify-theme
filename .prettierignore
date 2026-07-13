@@ -1,0 +1,5 @@
+node_modules
+assets/*.min.js
+assets/*.min.css
+assets/*.css
+*.json
