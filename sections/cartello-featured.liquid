@@ -1,0 +1,70 @@
+<section class="c-featured full-width">
+  <div class="c-container">
+    <div class="c-featured__head">
+      <div>
+        {%- if section.settings.eyebrow != blank -%}<p class="c-eyebrow">{{ section.settings.eyebrow }}</p>{%- endif -%}
+        {%- if section.settings.heading != blank -%}<h2 class="c-featured__title">{{ section.settings.heading }}</h2>{%- endif -%}
+      </div>
+      {%- if section.settings.link_label != blank -%}
+        <a class="c-featured__view" href="{{ section.settings.link_url | default: '#' }}">{{ section.settings.link_label }} &#8594;</a>
+      {%- endif -%}
+    </div>
+
+    {%- assign coll = section.settings.collection -%}
+    {%- if coll != blank and coll.products.size > 0 -%}
+      <div class="c-featured__grid">
+        {%- for product in coll.products limit: section.settings.limit -%}
+          {% render 'cartello-product-card', product: product %}
+        {%- endfor -%}
+      </div>
+    {%- else -%}
+      <p class="c-featured__empty">Choose a collection for this section in the theme editor to show products here.</p>
+    {%- endif -%}
+  </div>
+</section>
+
+{% stylesheet %}
+  .c-featured { padding: clamp(48px, 7vw, 100px) 0; background: var(--c-bg); }
+  .c-featured__head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 1rem;
+    margin-bottom: 2.2rem;
+  }
+  .c-featured__head .c-eyebrow { margin-bottom: 0.6rem; }
+  .c-featured__title {
+    font-family: var(--c-serif);
+    font-weight: 600;
+    font-size: clamp(1.9rem, 3.6vw, 2.8rem);
+  }
+  .c-featured__view {
+    font-family: var(--c-sans);
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-decoration: none;
+    color: var(--c-ink);
+    white-space: nowrap;
+    border-bottom: 1px solid var(--c-accent);
+    padding-bottom: 2px;
+  }
+  .c-featured__grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px 18px; }
+  .c-featured__empty { color: var(--c-muted); font-style: italic; }
+  @media (max-width: 900px) { .c-featured__grid { grid-template-columns: repeat(2, 1fr); } }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Cartello featured",
+  "tag": "section",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Featured" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "The essentials" },
+    { "type": "collection", "id": "collection", "label": "Collection" },
+    { "type": "range", "id": "limit", "label": "Products to show", "min": 2, "max": 8, "step": 1, "default": 4 },
+    { "type": "text", "id": "link_label", "label": "View-all label", "default": "View all" },
+    { "type": "url", "id": "link_url", "label": "View-all link" }
+  ],
+  "presets": [{ "name": "Cartello featured" }]
+}
+{% endschema %}

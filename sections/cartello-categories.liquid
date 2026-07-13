@@ -1,0 +1,134 @@
+<section class="c-cats full-width">
+  <div class="c-cats__wrap c-container">
+    {%- if section.settings.heading != blank -%}
+      <div class="c-cats__head">
+        {%- if section.settings.eyebrow != blank -%}
+          <p class="c-eyebrow">{{ section.settings.eyebrow }}</p>
+        {%- endif -%}
+        <h2 class="c-cats__title">{{ section.settings.heading }}</h2>
+      </div>
+    {%- endif -%}
+
+    <div class="c-cats__grid">
+      {%- for block in section.blocks -%}
+        {%- liquid
+          assign cat_img = block.settings.image
+          if cat_img == blank and block.settings.collection != blank
+            assign cat_img = block.settings.collection.featured_image
+            if cat_img == blank
+              assign cat_img = block.settings.collection.products.first.featured_image
+            endif
+          endif
+        -%}
+        <a class="c-cat" href="{{ block.settings.link | default: '#' }}" {{ block.shopify_attributes }}>
+          <div class="c-cat__media">
+            {%- if block.settings.image_asset != blank -%}
+              <img class="c-cat__img" src="{{ block.settings.image_asset | asset_url }}" alt="{{ block.settings.title | escape }}" loading="lazy" width="900" height="1200">
+            {%- elsif cat_img != blank -%}
+              {{ cat_img | image_url: width: 900 | image_tag: class: 'c-cat__img', loading: 'lazy' }}
+            {%- else -%}
+              <div class="c-cat__ph"><span>{{ block.settings.title | slice: 0 }}</span></div>
+            {%- endif -%}
+          </div>
+          <div class="c-cat__label">
+            <span>{{ block.settings.title }}</span>
+            <span class="c-cat__arrow" aria-hidden="true">&#8594;</span>
+          </div>
+        </a>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+  .c-cats { padding: clamp(48px, 7vw, 100px) 0; background: var(--c-bg); }
+  .c-cats__head { margin-bottom: 2.2rem; }
+  .c-cats__head .c-eyebrow { margin-bottom: 0.7rem; }
+  .c-cats__title {
+    font-family: var(--c-serif);
+    font-weight: 600;
+    font-size: clamp(1.9rem, 3.6vw, 2.8rem);
+  }
+  .c-cats__grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+  }
+  .c-cat { display: block; text-decoration: none; color: var(--c-ink); }
+  .c-cat__media {
+    position: relative;
+    aspect-ratio: 3 / 4;
+    overflow: hidden;
+    border-radius: 12px;
+    background: var(--c-soft);
+  }
+  .c-cat__img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.55s ease; }
+  .c-cat:hover .c-cat__img { transform: scale(1.05); }
+  .c-cat__ph {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    place-items: center;
+    background: linear-gradient(150deg, #efece6, #e0dacd);
+  }
+  .c-cat__ph span {
+    font-family: var(--c-serif);
+    font-size: clamp(3rem, 6vw, 4.5rem);
+    color: var(--c-accent);
+    opacity: 0.55;
+  }
+  .c-cat__label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 0.2rem 0;
+    font-family: var(--c-sans);
+    font-size: 1.02rem;
+    font-weight: 500;
+  }
+  .c-cat__arrow { color: var(--c-accent); transition: transform 0.2s ease; }
+  .c-cat:hover .c-cat__arrow { transform: translateX(5px); }
+
+  @media (max-width: 900px) {
+    .c-cats__grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 520px) {
+    .c-cats__grid { grid-template-columns: 1fr; }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Cartello categories",
+  "tag": "section",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "The collection" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Shop by category" }
+  ],
+  "blocks": [
+    {
+      "type": "category",
+      "name": "Category",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Image (optional — falls back to collection)" },
+        { "type": "text", "id": "image_asset", "label": "Image asset filename (optional)" },
+        { "type": "collection", "id": "collection", "label": "Collection (for fallback image)" },
+        { "type": "text", "id": "title", "label": "Title", "default": "Category" },
+        { "type": "url", "id": "link", "label": "Link" }
+      ]
+    }
+  ],
+  "max_blocks": 8,
+  "presets": [
+    {
+      "name": "Cartello categories",
+      "blocks": [
+        { "type": "category", "settings": { "title": "Men" } },
+        { "type": "category", "settings": { "title": "Outerwear" } },
+        { "type": "category", "settings": { "title": "Accessories" } },
+        { "type": "category", "settings": { "title": "New Arrivals" } }
+      ]
+    }
+  ]
+}
+{% endschema %}
