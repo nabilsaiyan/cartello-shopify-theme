@@ -1,0 +1,106 @@
+/* ============================================================
+   Cartello — global brand layer
+   Premium menswear: black / white / gold, serif + sans
+   ============================================================ */
+
+:root {
+  --c-bg: #ffffff;
+  --c-ink: #0a0a0a;
+  --c-muted: #737373;
+  --c-border: #e5e5e5;
+  --c-soft: #f5f5f5;
+  --c-accent: #c8a96e; /* signature gold */
+  --c-accent-deep: #a8894f;
+
+  --c-serif: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+  --c-sans: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  --c-container: 1240px;
+  --c-gutter: clamp(20px, 5vw, 64px);
+}
+
+/* ---- Base typography -------------------------------------- */
+body {
+  font-family: var(--c-sans);
+  color: var(--c-ink);
+  background: var(--c-bg);
+  font-size: 16px;
+  line-height: 1.6;
+  letter-spacing: 0.005em;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, .c-serif {
+  font-family: var(--c-serif);
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  line-height: 1.1;
+  text-wrap: balance;
+}
+
+a { color: inherit; }
+
+::selection { background: var(--c-accent); color: #fff; }
+
+/* Brand the logo/wordmark serif + tracked, whatever the header calls it */
+.header__heading,
+.header__logo-text,
+a[href="/"] .h2,
+.header a.logo {
+  font-family: var(--c-serif) !important;
+  letter-spacing: 0.18em;
+  font-weight: 600;
+}
+
+/* ---- Shared building blocks ------------------------------- */
+.c-container {
+  max-width: var(--c-container);
+  margin-inline: auto;
+  padding-inline: var(--c-gutter);
+  width: 100%;
+}
+
+.c-eyebrow {
+  font-family: var(--c-sans);
+  text-transform: uppercase;
+  letter-spacing: 0.26em;
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: var(--c-accent-deep);
+}
+
+/* ---- Buttons (pill, Cartello) ----------------------------- */
+.c-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5em;
+  font-family: var(--c-sans);
+  font-weight: 500;
+  font-size: 0.92rem;
+  letter-spacing: 0.02em;
+  padding: 0.95em 2em;
+  border-radius: 999px;
+  text-decoration: none;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: transform 0.15s ease, background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+.c-btn--solid { background: var(--c-ink); color: #fff; }
+.c-btn--solid:hover { background: #000; transform: translateY(-1px); }
+.c-btn--ghost { background: transparent; color: #fff; border-color: rgba(255, 255, 255, 0.55); }
+.c-btn--ghost:hover { background: #fff; color: var(--c-ink); }
+.c-btn--dark-ghost { background: transparent; color: var(--c-ink); border-color: var(--c-ink); }
+.c-btn--dark-ghost:hover { background: var(--c-ink); color: #fff; }
+.c-btn--light { background: #fff; color: var(--c-ink); }
+.c-btn--light:hover { background: var(--c-soft); transform: translateY(-1px); }
+
+/* ---- Rich text (page / policy / contact content) --------- */
+.rte { font-family: var(--c-sans); color: var(--c-ink); line-height: 1.75; }
+.rte > * + * { margin-top: 1rem; }
+.rte h2 { font-family: var(--c-serif); font-size: 1.6rem; font-weight: 600; margin-top: 2rem; }
+.rte h3 { font-family: var(--c-serif); font-size: 1.3rem; font-weight: 600; margin-top: 1.5rem; }
+.rte a { color: var(--c-accent-deep); }
+.rte ul, .rte ol { padding-left: 1.3em; }
+.rte li { margin-top: 0.3rem; }
+.rte img { border-radius: 12px; margin: 1.2rem 0; }
